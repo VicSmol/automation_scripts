@@ -1,0 +1,10 @@
+{
+  "name": "automation_scripts",
+  "version": "1.0.0",
+  "description": "This is collection of scripts for my automation routine tasks",
+  "main": "index.js",
+  "repository": "git@github.com:VicSmol/automation_scripts.git",
+  "author": "Victor Smolyakov <smolyakov.92@bk.ru>",
+  "license": "GNU General Public License v3.0",
+  "private": false
+}
