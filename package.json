@@ -6,5 +6,9 @@
   "repository": "git@github.com:VicSmol/automation_scripts.git",
   "author": "Victor Smolyakov <smolyakov.92@bk.ru>",
   "license": "GNU General Public License v3.0",
-  "private": false
+  "private": false,
+  "scripts": {
+    "remove_node_modules": "node remove_dir.js --start-path ~/Work/Greenatom --remove-dir node_modules",
+    "remove_dist": "node remove_dir.js --start-path ~/Work/Greenatom --remove-dir node_modules"
+  }
 }
