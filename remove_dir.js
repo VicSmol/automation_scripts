@@ -2,12 +2,8 @@
 
 const fs = require('node:fs/promises');
 const path = require('path');
+const getValue = require('./utils.js').getValue;
 
-const getValue = (argumentName) => {
-	const index = process.argv.indexOf(`${argumentName}`);
-
-	return index > -1 ? process.argv[index + 1] : undefined;
-};
 const startDirectory = getValue('--start-path');
 const removableDirectory = getValue('--remove-dir');
 const removeUnlessDirectories = async () => {
