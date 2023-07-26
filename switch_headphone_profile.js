@@ -11,6 +11,7 @@ const commands = {
 };
 
 try {
+	// TODO Fix --device_name arg parsing
 	const deviceName = getValue('--device_name');
 	const currentProfile = execSync(commands.get_headphone_profile, {encoding: 'utf8'}).trim();
 
@@ -30,6 +31,7 @@ try {
 	}
 } catch (error) {
 	console.error(`Error: ${error.message} | ${error}`);
+	process.exit(1);
 }
 
 process.exit(0);
