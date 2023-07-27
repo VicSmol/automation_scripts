@@ -8,8 +8,8 @@
   "license": "GNU General Public License v3.0",
   "private": false,
   "scripts": {
-    "remove_node_modules": "node remove_dir.js --start-path ~/Work/Greenatom --remove-dir node_modules",
-    "remove_dist": "node remove_dir.js --start-path ~/Work/Greenatom --remove-dir node_modules",
-    "switch_microphones": "node switch_headphone_profile.js --device_name bluez_card.F8_AB_E5_65_5B_67"
+    "remove_node_modules": "node removeDirectories.js --start-path ~/Work/Greenatom --remove-dir node_modules",
+    "remove_dist": "node removeDirectories.js --start-path ~/Work/Greenatom --remove-dir dist",
+    "switch_headphone_profile": "node switchHeadphoneProfiles.js --device_name bluez_card.F8_AB_E5_65_5B_67"
   }
 }
