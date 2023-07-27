@@ -1,5 +1,7 @@
 #!/bin/env node
 
+//TODO There's need to write description about this script
+
 const {execSync} = require('child_process');
 const getValue = require('./utils').getValue;
 const modes = {

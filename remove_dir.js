@@ -1,5 +1,7 @@
 'use strict';
 
+//TODO There's need to write description about this script
+
 const fs = require('node:fs/promises');
 const path = require('path');
 const getValue = require('./utils.js').getValue;
