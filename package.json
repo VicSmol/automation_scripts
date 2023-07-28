@@ -10,6 +10,8 @@
   "scripts": {
     "remove_node_modules": "node removeDirectories.js --start-path ~/Work/Greenatom --remove-dir node_modules",
     "remove_dist": "node removeDirectories.js --start-path ~/Work/Greenatom --remove-dir dist",
-    "switch_headphone_profile": "node switchHeadphoneProfiles.js --device_name bluez_card.F8_AB_E5_65_5B_67"
+    "switch_headphone_profile": "node switchHeadphoneProfiles.js --device-name bluez_card.F8_AB_E5_65_5B_67",
+    "update_virtualbox": "sudo node updateVirtualbox.js",
+    "make_ssh_tunnel": "node makeSshTunnels.js --local-user victor --remote-user smoly --host 192.168.0.6 --port 22"
   }
 }
