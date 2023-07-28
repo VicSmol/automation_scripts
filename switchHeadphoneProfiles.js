@@ -2,9 +2,9 @@
 
 //TODO There's need to write description about this script
 
-const {execSync} = require('child_process');
+const {execSync} = require('node:child_process');
 const getValue = require('./utils').getValue;
-const deviceName = getValue('--device_name');
+const deviceName = getValue('--device-name');
 const modes = {
 	'a2dp_sink': 'a2dp_sink', 'headset_head_unit': 'headset_head_unit', 'off': 'off',
 };
