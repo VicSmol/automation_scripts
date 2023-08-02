@@ -28,12 +28,12 @@ console.info('VirtualBox update start\n');
 try {
 	instructions.forEach((instruction, index) => {
 		console.log(`---------Command ${index + 1}-----------`);
-		console.info(`The command "${instruction.command} ${instruction.args.join(' ')}" is start execute`);
+		console.info(`The command "${instruction.command} ${instruction.args.join(' ')}" is start execute\n`);
 
 		const {stdout, stderr, status, signal, pid} = spawnSync(instruction.command, instruction.args, {encoding: 'utf8'});
 
 		console.debug({pid, status, signal, stdout, stderr});
-		console.info(`The command "${instruction.command} ${instruction.args.join(' ')}" has been executed`);
+		console.info(`\nThe command "${instruction.command} ${instruction.args.join(' ')}" has been executed`);
 		console.log(`-----------------------------------------\n`);
 	});
 } catch (error) {
