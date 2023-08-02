@@ -2,6 +2,8 @@
 
 //TODO There's need to write description about this script
 
+'use strict';
+
 const {execSync} = require('node:child_process');
 const getValue = require('./utils').getValue;
 const deviceName = getValue('--device-name');
