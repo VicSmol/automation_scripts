@@ -1,0 +1,30 @@
+[
+  {
+    "network": "127.0.0.2",
+    "hosts": [
+      "my-service.local"
+    ],
+    "forwarding": [
+      "my-service.local:443:192.168.0.3:443",
+      "my-service.local:22:192.168.0.3:22"
+    ]
+  },
+  {
+    "network": "127.0.0.3",
+    "hosts": [
+      "example.com"
+    ],
+    "forwarding": [
+      "example.com:443:192.168.1.10:443"
+    ]
+  },
+  {
+    "network": "127.0.0.4",
+    "hosts": [
+      "john-doe.org"
+    ],
+    "forwarding": [
+      "john-doe.org:443:192.168.2.21:443"
+    ]
+  }
+]
