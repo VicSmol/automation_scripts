@@ -12,6 +12,6 @@
     "remove_dist": "node removeDirectories.js --start-path ~/Work/Greenatom --remove-dir dist",
     "switch_headphone_profile": "node switchHeadphoneProfiles.js --device-name bluez_card.F8_AB_E5_65_5B_67",
     "update_virtualbox": "sudo node updateVirtualbox.js",
-    "make_ssh_tunnel": "node makeSshTunnels.js --local-user victor --remote-user smoly --host 192.168.0.6 --port 22"
+    "make_ssh_tunnels": "sudo node makeSshTunnels.js --remote-user smoly --host 192.168.0.6 --port 22 --private-key-path ~/.ssh/id_rsa --dataset ~/Work/automation_scripts/datasets/services-forwarding.json"
   }
 }
