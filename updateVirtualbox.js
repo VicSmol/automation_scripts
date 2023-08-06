@@ -12,6 +12,7 @@ const instructions = [
 	{
 		command: 'apt', args: [
 			'install',
+			'-y',
 			'--reinstall',
 			'linux-headers-$(uname -r)',
 			'virtualbox-dkms',
@@ -36,9 +37,13 @@ try {
 		console.info(`\nThe command "${instruction.command} ${instruction.args.join(' ')}" has been executed`);
 		console.log(`-----------------------------------------\n`);
 	});
+
+	console.info('VirtualBox has been updated\n');
 } catch (error) {
+	console.info('VirtualBox has not been updated\n');
 	console.error(`ERROR: ${error}`);
+
 	process.exit(1);
 }
 
-console.info('VirtualBox has been updated\n');
+process.exit(0);
