@@ -6,12 +6,12 @@
 
 const fs = require('node:fs');
 const {execFile, execFileSync, execSync} = require('node:child_process');
-const getValue = require('./utils').getValue;
-const remoteUser = getValue('--remote-user');
-const host = getValue('--host');
-const port = getValue('--port');
-const privateKeyPath = getValue('--private-key-path');
-const datasetPath = getValue('--dataset');
+const extractValue = require('./utils').extractValue;
+const remoteUser = extractValue('--remote-user');
+const host = extractValue('--host');
+const port = extractValue('--port');
+const privateKeyPath = extractValue('--private-key-path');
+const datasetPath = extractValue('--dataset');
 //TODO ask DEVOPS about every service and write description for it
 /** @type {{network: string, hosts: string[], forwarding: string[]}[]} */
 const dataset = JSON.parse(fs.readFileSync(datasetPath, {encoding: 'utf-8'}));
@@ -50,7 +50,9 @@ try {
 		console.info('          Hosts backup file file exist |+|');
 	} else {
 		console.info('          Start creating hosts backup file...');
+
 		fs.cpSync(hostsPath, backupHostsPath);
+
 		console.info('          Hosts backup file was created |+|');
 	}
 
@@ -59,45 +61,57 @@ try {
 
 	console.info('------------------2) Loopback networks cleaning----------------');
 	console.info('          Start additional Loopback networks cleaning...');
+
 	removeLoopbackNetworks();
+
 	console.info('          Loopback networks cleaning was finished |+|');
 	console.info('---------------------------------------------------------------\n');
 
 	console.info('------------------3) Copy hosts backup file to hosts-----------');
 	console.info('          Start copy backup of hosts file to hosts...');
+
 	fs.cpSync(backupHostsPath, hostsPath);
+
 	console.info('          Backup of hosts file to hosts was finished |+|');
 	console.info('---------------------------------------------------------------\n');
 
 	console.info('------------------4) Old ssh tunnels cleaning------------------');
 	console.info('          Start old ssh tunnels cleaning...');
+
 	killOldTunnels(privateKeyPath);
+
 	console.info('          Old ssh tunnels cleaning was finished |+|');
 	console.info('---------------------------------------------------------------\n');
 
 	console.info('------------------5) Appending networks to loopback interface--');
 	console.info('          Start old ssh tunnels cleaning...');
+
 	dataset.forEach(service => execFileSync(`ip addr add ${service.network}/8 dev lo`));
+
 	console.info('          Old ssh tunnels cleaning was finished |+|');
 	console.info('---------------------------------------------------------------\n');
 
 	console.info('------------------6) Forwarded services append to hosts file---');
 	console.info('          Start appending services to hosts file...');
+
 	dataset.forEach(service => {
 		service.hosts.forEach(host => {
 			fs.appendFileSync(hostsPath, `${service.network} ${host}`);
 		});
 	});
+
 	console.info('          Forwarded services appending to hosts file was finished |+|');
 	console.info('---------------------------------------------------------------\n');
 
 	console.info('------------------7) Make SSH tunnels--------------------------');
 	console.info('          Start SSH tunnels creating...');
+
 	dataset.forEach(service =>
 		service.forwarding.forEach(tunnel =>
 			execFile("ssh -N -n -i privateKeyPath -o ExitOnForwardFailure=yes -o StrictHostKeyChecking=no -L " +
 				`${tunnel} ${remoteUser}@${host} -p	${port}`))
 	);
+
 	console.info('          SSH tunnels creating was finished |+|');
 	console.info('---------------------------------------------------------------\n');
 } catch (error) {

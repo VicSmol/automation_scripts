@@ -5,8 +5,8 @@
 'use strict';
 
 const {execSync} = require('node:child_process');
-const getValue = require('./utils').getValue;
-const deviceName = getValue('--device-name');
+const extractValue = require('./utils').extractValue;
+const deviceName = extractValue('--device-name');
 const modes = {
 	'a2dp_sink': 'a2dp_sink', 'headset_head_unit': 'headset_head_unit', 'off': 'off',
 };

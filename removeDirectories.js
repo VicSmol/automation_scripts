@@ -4,9 +4,9 @@
 
 const fs = require('node:fs/promises');
 const path = require('path');
-const getValue = require('./utils.js').getValue;
-const startDirectory = getValue('--start-path');
-const removableDirectory = getValue('--remove-dir');
+const extractValue = require('./utils.js').extractValue;
+const startDirectory = extractValue('--start-path');
+const removableDirectory = extractValue('--remove-dir');
 
 fs.readdir(startDirectory, {withFileTypes: true}).then(dirents => dirents.filter(entity => entity.isDirectory())
 	.map(dirent => path.join(startDirectory, dirent.name, removableDirectory))
