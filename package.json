@@ -10,9 +10,11 @@
   "scripts": {
     "remove_node_modules": "node removeDirectories.js --start-path ~/Work/Greenatom --remove-dir node_modules",
     "remove_dist": "node removeDirectories.js --start-path ~/Work/Greenatom --remove-dir dist",
-    "switch_headphone_profile": "node switchHeadphoneProfiles.js --device-name bluez_card.F8_AB_E5_65_5B_67",
+    "switch_headphone_profiles": "node switchHeadphoneProfiles.js --device-name bluez_card.F8_AB_E5_65_5B_67",
     "update_virtualbox": "sudo node updateVirtualbox.js",
     "make_ssh_tunnels": "sudo node makeSshTunnels.js --remote-user smoly --host 192.168.0.6 --port 22 --private-key-path ~/.ssh/id_rsa --dataset ~/Work/automation_scripts/datasets/services-forwarding.json",
-    "remove_ssh_tunnels": "sudo node makeSshTunnels.js --shutdown true --remote-user smoly --host 192.168.0.6 --port 22 --private-key-path ~/.ssh/id_rsa --dataset ~/Work/automation_scripts/datasets/services-forwarding.json"
+    "remove_ssh_tunnels": "sudo node makeSshTunnels.js --shutdown true --remote-user smoly --host 192.168.0.6 --port 22 --private-key-path ~/.ssh/id_rsa --dataset ~/Work/automation_scripts/datasets/services-forwarding.json",
+    "switch_output_devices_forward": "node switchOutputDevices.js --reverse-order false",
+    "switch_output_devices_reverse": "node switchOutputDevices.js --reverse-order true"
   }
 }
