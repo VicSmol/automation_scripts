@@ -21,6 +21,7 @@ const getActiveDevice = () => execSync("pactl info " +
 /**
  * @param {string[]} devices
  * @param {string} currentDevice
+ * @param isReverseOrder
  */
 const switchOutputDevice = (devices, currentDevice, isReverseOrder = false) => {
 	const index = devices.findIndex((value) => value === currentDevice);
