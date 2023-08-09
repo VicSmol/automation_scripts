@@ -21,9 +21,8 @@ const switchOutputDevice = (devices, currentDevice, isReverseOrder = false) => {
 	const index = devices.findIndex((value) => value === currentDevice);
 	const diff = isReverseOrder ? -1 : 1;
 	const nextIndex = (index + diff + devices.length) % devices.length;
-	const cliOutput = execSync(`pacmd set-default-sink ${devices[nextIndex]}`, {encoding: 'utf-8'});
 
-	console.debug(cliOutput);
+	execSync(`pacmd set-default-sink ${devices[nextIndex]}`, {encoding: 'utf-8'});
 }
 
 try {
