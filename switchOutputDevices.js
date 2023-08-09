@@ -7,11 +7,16 @@
 const {execSync} = require('node:child_process');
 const extractValue = require('./utils').extractValue;
 const isReverseOrder = extractValue('--reverse-order') === true;
-const getOutputDevices = () => execSync("pacmd list-sinks " + "| grep 'name: ' " + "| grep -E '[^<>]+' " + "| awk '{print $2}'", {encoding: 'utf-8'})
+const getOutputDevices = () => execSync("pacmd list-sinks " +
+	"| grep 'name: ' " +
+	"| grep -E '[^<>]+' " +
+	"| awk '{print $2}'", {encoding: 'utf-8'})
 	.split('\n')
 	.filter(deviceName => deviceName)
 	.map(deviceName => deviceName.slice(1, -1));
-const getActiveDevice = () => execSync("pactl info " + "| grep -iE 'Default\\s+Sink' " + "| awk '{print $3}'", {encoding: 'utf-8'})
+const getActiveDevice = () => execSync("pactl info " +
+	"| grep -iE 'Default\\s+Sink' " +
+	"| awk '{print $3}'", {encoding: 'utf-8'})
 	.trim();
 /**
  * @param {string[]} devices
