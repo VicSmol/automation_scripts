@@ -9,7 +9,7 @@ const {spawn, execSync} = require('node:child_process');
 const extractValue = require('./utils').extractValue;
 const isShutdown = extractValue('--shutdown') === 'true';
 const remoteUser = extractValue('--remote-user');
-const host = extractValue('--host');
+const remoteHost = extractValue('--remote-host');
 const port = parseInt(extractValue('--port'));
 const privateKeyPath = extractValue('--private-key-path');
 const datasetPath = extractValue('--dataset');
@@ -114,7 +114,7 @@ try {
 	dataset.forEach(service =>
 		service.forwarding.forEach(tunnel => {
 			const instruction = (`ssh -N -n -i ${privateKeyPath} -o ExitOnForwardFailure=yes -o StrictHostKeyChecking=no -L ` +
-				`${tunnel} ${remoteUser}@${host} -p ${port}`)
+				`${tunnel} ${remoteUser}@${remoteHost} -p ${port}`)
 				.split(' ')
 				.filter(item => item).reduce((acc, item, index) => {
 					if (index === 0) {
