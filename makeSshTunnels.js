@@ -13,7 +13,6 @@ const remoteHost = extractValue('--remote-host');
 const port = parseInt(extractValue('--port'));
 const privateKeyPath = extractValue('--private-key-path');
 const datasetPath = extractValue('--dataset');
-//TODO ask DEVOPS about every service and write description for it
 /** @type {{network: string, hosts: string[], forwarding: string[]}[]} */
 const dataset = JSON.parse(fs.readFileSync(datasetPath, {encoding: 'utf-8'}));
 const hostsPath = '/etc/hosts';
