@@ -47,7 +47,7 @@ try {
 	console.info('          Start hosts file backup checking...');
 
 	if (fs.existsSync(backupHostsPath)) {
-		console.info('          Hosts backup file exists |+|');
+		console.info('          Hosts backup file already exist |+|');
 	} else {
 		console.info('          Start creating hosts backup file...');
 
