@@ -115,7 +115,8 @@ try {
 			const instruction = (`ssh -N -n -i ${privateKeyPath} -o ExitOnForwardFailure=yes -o StrictHostKeyChecking=no -L ` +
 				`${tunnel} ${remoteUser}@${remoteHost} -p ${port}`)
 				.split(' ')
-				.filter(item => item).reduce((acc, item, index) => {
+				.filter(item => item)
+				.reduce((acc, item, index) => {
 					if (index === 0) {
 						acc['command'] = item;
 						acc['args'] = [];
