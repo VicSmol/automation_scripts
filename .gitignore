@@ -3,3 +3,4 @@
 datasets/*
 !datasets/example.*
 *.sh
+old_sh_scripts/
