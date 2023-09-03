@@ -7,7 +7,7 @@
 const fs = require('node:fs');
 const {execSync} = require('node:child_process');
 const extractValue = require('./utils').extractValue;
-const configPath = extractValue('--config');
+const configPath = extractValue('--session-config');
 const encodingOption = {encoding: 'utf-8'};
 const orientation = {'vertical': '-h', 'horizontal': ''};
 
