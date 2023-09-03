@@ -1,0 +1,100 @@
+[
+  {
+    "name": "main",
+    "windows": [
+      {
+        "number": 1,
+        "panes": [
+          {
+            "number": 1,
+            "commands": [
+              "cd",
+              "clear",
+              "htop"
+            ],
+            "splits": [
+              {
+                "orientation": "vertical"
+              },
+              {
+                "orientation": "horizontal"
+              }
+            ]
+          },
+          {
+            "number": 2,
+            "commands": [
+              "cd",
+              "clear"
+            ],
+            "splits": []
+          },
+          {
+            "number": 3,
+            "commands": [
+              "cd ~/Work/",
+              "mc"
+            ],
+            "splits": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "work",
+    "windows": [
+      {
+        "number": 1,
+        "panes": [
+          {
+            "number": 1,
+            "commands": [
+              "cd",
+              "clear",
+              "htop"
+            ],
+            "splits": [
+              {
+                "orientation": "vertical"
+              },
+              {
+                "orientation": "horizontal"
+              }
+            ]
+          },
+          {
+            "number": 2,
+            "commands": [
+              "cd ~/Work/MyProjects/tunnel/",
+              "clear"
+            ],
+            "splits": []
+          },
+          {
+            "number": 3,
+            "commands": [
+              "cd ~/Work/MyProjects/",
+              "clear",
+              "mc"
+            ],
+            "splits": [
+              {
+                "orientation": "horizontal"
+              }
+            ]
+          },
+          {
+            "number": 4,
+            "commands": [
+              "cd ~/Work/MyProjects/TestProject/",
+              "clear",
+              "docker ps -a"
+            ],
+            "splits": []
+          }
+        ]
+      }
+    ]
+  }
+]
