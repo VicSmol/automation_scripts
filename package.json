@@ -16,6 +16,7 @@
     "remove_ssh_tunnels": "sudo node makeSshTunnels.js --shutdown true --remote-user smoly --remote-host 192.168.0.6 --port 22 --private-key-path ~/.ssh/id_rsa --dataset ~/Work/automation_scripts/datasets/services-forwarding.json",
     "switch_output_devices_forward": "node switchOutputDevices.js --reverse-order false",
     "switch_output_devices_reverse": "node switchOutputDevices.js --reverse-order true",
-    "create_tmux_sessoions": "node create_tmux_sessions.js --session-config ~/Work/automation_scripts/datasets/tmux_sessions.json"
+    "create_tmux_sessoions": "node createTmuxSessions.js --session-config ~/Work/automation_scripts/datasets/tmux-sessions.json",
+    "replace_files_strings": "sudo node replaceFilesStrings.js --replacement 'review-servlaosipov-feat-tuv-277002-business-trip-command-corre' --substitution 'review-vivsmolyakov-feat-tuv-277002-business-trip-command-corre' --files [/home/victor/Work/Greenatom/calendar-service/.env,/home/victor/.bashrc,/home/victor/Work/automation_scripts/datasets/services-forwarding.json,/etc/hosts]"
   }
 }
