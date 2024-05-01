@@ -5,39 +5,27 @@
 'use strict';
 
 const {execSync} = require('node:child_process');
-const extractValue = require('./utils').extractValue;
-const isReverseOrder = extractValue('--reverse-order') === true;
-const getOutputDevices = () => execSync("pacmd list-sinks " +
-	"| grep 'name: ' " +
-	"| grep -E '[^<>]+' " +
-	"| awk '{print $2}'", {encoding: 'utf-8'})
-	.split('\n')
-	.filter(deviceName => deviceName)
-	.map(deviceName => deviceName.slice(1, -1));
-const getActiveDevice = () => execSync("pactl info " +
-	"| grep -iE 'Default\\s+Sink' " +
-	"| awk '{print $3}'", {encoding: 'utf-8'})
-	.trim();
-/**
- * @param {string[]} devices
- * @param {string} currentDevice
- * @param isReverseOrder
- */
-const switchOutputDevice = (devices, currentDevice, isReverseOrder = false) => {
-	const index = devices.findIndex((value) => value === currentDevice);
-	const diff = isReverseOrder ? -1 : 1;
-	const nextIndex = (index + diff + devices.length) % devices.length;
-
-	execSync(`pacmd set-default-sink ${devices[nextIndex]}`, {encoding: 'utf-8'});
-}
+const {extractValue, getOutputSources, getCurrentOutputSource} = require("./utils");
+const isReverseOrder = JSON.parse(extractValue('--reverse-order'));
+const command = 'pacmd set-default-sink';
+const outputSources = getOutputSources();
+const currentSource = getCurrentOutputSource();
 
 try {
-	const outputDevices = getOutputDevices();
-	const activeDevice = getActiveDevice();
+	let index = outputSources.findIndex((source) => source === currentSource);
+	const diff = isReverseOrder ? -1 : 1;
+	let nextIndex = (index + diff + outputSources.length) % outputSources.length;
+	let commandOutput = execSync(`pacmd set-default-sink ${outputSources[nextIndex]}`, {encoding: 'utf-8'}).trim();
+	let count = 1;
 
-	switchOutputDevice(outputDevices, activeDevice, isReverseOrder);
+	while (commandOutput === `Sink ${outputSources[nextIndex]} does not exist.` && count <= outputSources.length) {
+		nextIndex = (nextIndex + diff + outputSources.length) % outputSources.length;
+		commandOutput = execSync(`${command} ${outputSources[nextIndex]}`, {encoding: 'utf-8'}).trim();
+		count++;
+	}
 } catch (error) {
-	console.error(`Error: ${error.message} | ${error}`);
+	console.error(`ERROR: ${error.message}`);
+	console.error(error);
 	process.exit(1);
 }
 
