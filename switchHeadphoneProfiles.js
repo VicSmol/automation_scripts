@@ -8,7 +8,8 @@ const {execSync} = require('node:child_process');
 const extractValue = require('./utils').extractValue;
 const deviceName = extractValue('--device-name');
 const modes = {
-	'a2dp_sink': 'a2dp_sink', 'headset_head_unit': 'headset_head_unit', 'off': 'off',
+	a2dp_sink: 'a2dp_sink',
+	headset_head_unit: 'headset_head_unit',
 };
 const commands = {
 	'get_headphone_profile': `pactl list cards | awk -v RS='' '/${deviceName}/' | awk -F': ' '/Active Profile/ { print $2 }'`,
