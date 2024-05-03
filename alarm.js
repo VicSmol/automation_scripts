@@ -8,10 +8,11 @@ const {execSync} = require('node:child_process');
 const {extractValue} = require('./utils.js');
 const alarmSound = extractValue('--alarm-sound');
 const audioDevice = extractValue('--audio-device');
+const volume = extractValue('--volume');
 const time = extractValue('--time');
 const commands = {
 	'set_output_device': `pacmd set-default-sink ${audioDevice}`,
-	'set_output_volume': `pactl set-sink-volume ${audioDevice} 100%`,
+	'set_output_volume': `pactl set-sink-volume ${audioDevice} ${volume}%`,
 	'wake_on_time': `sudo /usr/sbin/rtcwake --mode mem --local -v --date '${time}'`,
 	'run_alarm': `ffplay -nodisp -v 0 -volume 100 ${alarmSound}`,
 }

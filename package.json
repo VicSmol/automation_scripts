@@ -19,7 +19,7 @@
     "switch_output_devices_reverse": "node switchOutputDevices.js --reverse-order true",
     "create_tmux_sessoions": "node createTmuxSessions.js --session-config ~/Work/automation_scripts/datasets/tmux-sessions.json",
     "replace_files_strings": "sudo node replaceFilesStrings.js --replacement 'review-servlaosipov-feat-tuv-277002-business-trip-command-corre' --substitution 'review-vivsmolyakov-feat-tuv-277002-business-trip-command-corre' --files [/home/victor/Work/Greenatom/calendar-service/.env,/home/victor/.bashrc,/home/victor/Work/automation_scripts/datasets/services-forwarding.json,/etc/hosts]",
-    "wake_on_time": "node alarm.js --alarm-sound '~/Downloads/mk_track.mp3' --audio-device alsa_output.pci-0000_00_1f.3.hdmi-stereo --time '09:00'"
+    "wake_on_time": "node alarm.js --alarm-sound '~/Downloads/mk_track.mp3' --audio-device alsa_output.pci-0000_00_1f.3.hdmi-stereo --volume 80 --time '09:00'"
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.20.0"
