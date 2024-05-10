@@ -4,23 +4,34 @@
 
 'use strict';
 
-const {extractValue} = require('./utils');
 const k8s = require('@kubernetes/client-node');
+const stream = require('node:stream');
+const {extractValue, getTimeFormat} = require('./utils');
 const namespace = extractValue('--namespace');
 const serviceName = extractValue('--service-name');
 const command = extractValue('--command');
-const podName = extractValue('--pod-name');
+const duration = parseInt(extractValue('--duration')) || 1000 * 60 * 15; // measures in milliseconds
 const kc = new k8s.KubeConfig();
 
 kc.loadFromFile('/home/victor/.kube/config_dhrm');
 
 const k8sPodsApi = kc.makeApiClient(k8s.CoreV1Api);
 const k8sNamespaceApi = kc.makeApiClient(k8s.AppsV1Api);
+const log = new k8s.Log(kc);
+
+const disconnectAfterDelay = async (request, ms) => {
+	await new Promise(resolve => setTimeout(resolve, ms));
+	request.abort();
+
+	console.info('\n\nDisconnecting...');
+	console.info(`The time ${ms}ms is over\n`);
+};
 
 const getPods = async (namespace) => {
-	const {items} = await k8sPodsApi.listNamespacedPod(namespace);
-	return items;
+	const {body} = await k8sPodsApi.listNamespacedPod(namespace);
+	return body.items;
 };
+
 const getPodsList = async (namespace) => {
 	try {
 		const pods = await getPods(namespace);
@@ -49,13 +60,12 @@ const getServiceInfo = async (namespace, serviceName) => {
 		const {body: deployment} = await k8sNamespaceApi.readNamespacedDeployment(serviceName, namespace);
 		const {metadata, status} = deployment;
 		const creationTimestamp = new Date(metadata.creationTimestamp);
-		const hoursPassed = Math.floor((Date.now() - creationTimestamp) / (1000 * 60 * 60));
 		const serviceInfo = {
 			'NAME': metadata.name,
-			'READY': status.readyReplicas,
-			'UP-TO-DATE': status.updatedReplicas,
-			'AVAILABLE': status.availableReplicas,
-			'AGE_HOURS': hoursPassed
+			'READY': status.readyReplicas || 0,
+			'UP-TO-DATE': status.updatedReplicas || 0,
+			'AVAILABLE': status.availableReplicas || 0,
+			'AGE_HOURS': getTimeFormat(creationTimestamp),
 		};
 
 		console.info(`Service ${serviceName} information:`);
@@ -78,27 +88,94 @@ const getPodLogs = async (namespace, serviceName) => {
 	}
 };
 
-const commands = new Map();
+const fetchAndStreamPodLogs = async (namespace, serviceName) => {
+	try {
+		const targetPod = (await getPods(namespace))?.find(pod => pod.metadata.labels['app.kubernetes.io/name'] === serviceName);
 
-commands.set('get_pods_list', {action: getPodsList, args: [namespace]});
-commands.set('get_service_info', {
-	action: getServiceInfo, args: [
-		namespace,
-		serviceName
-	]
-});
-commands.set('get_environment_info', {action: getPodsList, args: [namespace]}); // ?
-commands.set('get_pod_logs', {
-	action: getPodLogs, args: [
-		namespace,
-		serviceName
-	]
-});
-commands.set('scale_up_service', {action: getPodsList, args: [namespace]});
-commands.set('scale_down_service', {action: getPodsList, args: [namespace]});
-commands.set('forward_port', {action: getPodsList, args: [namespace]});
-commands.set('unforward_port', {action: getPodsList, args: [namespace]});
+		if (!targetPod) {
+			throw new Error(`Pod with service name '${serviceName}' not found in namespace '${namespace}'.`);
+		}
 
-const selectedCommand = commands.get(command);
+		const podName = targetPod.metadata.name;
+		const containerName = targetPod.spec.containers[0].name;
+		const logStream = new stream.PassThrough();
 
-selectedCommand.action(...selectedCommand.args);
+		logStream.on('data', (chunk) => {
+			process.stdout.write(chunk);
+		});
+
+		const logRequest = await log.log(namespace, podName, containerName, logStream, {
+			follow: true, tailLines: 50, pretty: true, timestamps: false,
+		});
+
+		await disconnectAfterDelay(logRequest, duration);
+	} catch (error) {
+		console.error(error.message);
+		console.error(error);
+	}
+};
+
+const scalePodByOne = async (namespace, serviceName, increase = 1) => {
+	try {
+		const deployment = await k8sNamespaceApi.readNamespacedDeployment(serviceName, namespace)
+			.then(({body}) => body);
+
+		deployment.spec.replicas += increase;
+
+		const responce = await k8sNamespaceApi.replaceNamespacedDeployment(serviceName, namespace, deployment);
+
+		console.info(`\nPod ${serviceName} was scaled by ${increase}`);
+		console.info(`Pod ${serviceName} replicas is | ${responce.body.spec.replicas} |\n`);
+	} catch (error) {
+		console.error(`ERROR: ${error.message}`);
+		console.error(error);
+	}
+};
+
+async function main() {
+	const commands = new Map();
+
+	commands.set('get_pods_list', {action: getPodsList, args: [namespace]});
+	commands.set('get_service_info', {
+		action: getServiceInfo, args: [
+			namespace,
+			serviceName
+		]
+	});
+	commands.set('get_environment_info', {action: getPodsList, args: [namespace]}); // ?
+	commands.set('get_pod_logs', {
+		action: getPodLogs, args: [
+			namespace,
+			serviceName
+		]
+	});
+	commands.set('get_pod_logs_real_time', {
+		action: fetchAndStreamPodLogs, args: [
+			namespace,
+			serviceName,
+			duration
+		]
+	});
+	commands.set('scale_up_service', {
+		action: scalePodByOne, args: [
+			namespace,
+			serviceName,
+			1
+		]
+	});
+	commands.set('scale_down_service', {
+		action: scalePodByOne, args: [
+			namespace,
+			serviceName,
+			-1
+		]
+	});
+	commands.set('forward_port', {action: getPodsList, args: [namespace]});
+	commands.set('unforward_port', {action: getPodsList, args: [namespace]});
+
+	const selectedCommand = commands.get(command);
+
+	selectedCommand.action(...selectedCommand.args);
+}
+
+main();
