@@ -22,7 +22,10 @@
     "wake_on_time": "node alarm.js --alarm-sound '~/Downloads/mk_track.mp3' --audio-device alsa_output.pci-0000_00_1f.3.hdmi-stereo --volume 80 --time '09:00'",
     "k8s_get_pods_list": "node k8sCommands.js --namespace dev --command get_pods_list",
     "k8s_get_pod": "node k8sCommands.js --command get_service_info --namespace dev --service-name calendar-service",
-    "k8s_get_pod_logs": "node k8sCommands.js --command get_pod_logs --namespace dev --service-name calendar-service"
+    "k8s_get_pod_logs": "node k8sCommands.js --command get_pod_logs --namespace dev --service-name calendar-service",
+    "k8s_get_pod_logs_real_time": "node k8sCommands.js --command get_pod_logs_real_time --namespace dev --service-name calendar-service",
+    "k8s_scale_up_pod": "node k8sCommands.js --command scale_up_service --namespace review-vivsmolyakov-op-408628-op-408628-fix-overtime-work-in-tu --increase 1 --service-name calendar-service",
+    "k8s_scale_down_pod": "node k8sCommands.js --command scale_down_service --namespace review-vivsmolyakov-op-408628-op-408628-fix-overtime-work-in-tu --increase -1 --service-name calendar-service"
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.20.0"
