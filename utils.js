@@ -10,6 +10,23 @@ module.exports = {
 	},
 
 	/**
+	 * Function to format the time based on the time difference from a given timestamp
+	 * @param {number} creationTimestamp - The timestamp to calculate the time difference from
+	 * @returns {string} - The formatted time in HH:MM format
+	 */
+	getTimeFormat: (creationTimestamp) => {
+		const currentTime = Date.now();
+		const timeDifference = currentTime - creationTimestamp;
+		const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+		const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+
+		const formattedHours = hours.toString().padStart(2, '0');
+		const formattedMinutes = minutes.toString().padStart(2, '0');
+
+		return `${formattedHours}:${formattedMinutes}`;
+	},
+
+	/**
 	 * A function that retrieves output sources from a command execution result, processes and formats the output.
 	 *
 	 * @return {string[]} an array of processed and formatted output sources
