@@ -170,32 +170,12 @@ const forwardPorts = async (namespace, targets) => {
 		for (const target of fullTargets) {
 			const server = net.createServer(async (socket) => {
 				portForward.portForward(namespace, target.podName, [target.port], socket, socket, socket);
-
-				socket.on('error', (error) => {
-					console.error(`\nConnection ERROR: ${error.message}`);
-					console.error(error);
-				});
-
-				socket.on('end', () => {
-					console.debug(`\nThe Pod ${target.serviceName} has been disconnected`);
-					console.debug(`Connection Ended\n`);
-				});
-
-				socket.on('close', () => {
-					console.debug(`\nThe Pod ${target.serviceName} has been disconnected`);
-					console.debug(`Connection Closed\n`);
-				});
-
-				socket.on('timeout', () => {
-					console.debug(`\nThe Pod ${target.serviceName} has been disconnected`);
-					console.debug(`Connection Timeout\n`);
-				});
 			});
 
 			server.listen(target.port, '127.0.0.1', () => {
-				console.log(`\nPort Forwarding Established`);
-				console.log(`[${target.serviceName}:${target.port}] <-> 127.0.0.1:${server.address().port}`);
-				console.log(`Connection Started...\n`);
+				console.info(`\nPort Forwarding Established`);
+				console.debug(`[${target.serviceName}:${target.port}] <-> 127.0.0.1:${server.address().port}`);
+				console.info(`Connection Started...\n`);
 			});
 		}
 	} catch (error) {
