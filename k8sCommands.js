@@ -4,13 +4,19 @@
 
 'use strict';
 
-const k8s = require('@kubernetes/client-node');
 const stream = require('node:stream');
+const net = require('node:net');
+const k8s = require('@kubernetes/client-node');
 const {extractValue, getTimeFormat} = require('./utils');
 const namespace = extractValue('--namespace');
-const serviceName = extractValue('--service-name');
 const command = extractValue('--command');
+const serviceName = extractValue('--service-name')
 const duration = parseInt(extractValue('--duration')) || 1000 * 60 * 15; // measures in milliseconds
+
+/**
+ * @type {{serviceName: string, port: number}[]}
+ * */
+const targets = JSON.parse(extractValue('--targets') || '[]');
 const kc = new k8s.KubeConfig();
 
 kc.loadFromFile('/home/victor/.kube/config_dhrm');
@@ -18,6 +24,7 @@ kc.loadFromFile('/home/victor/.kube/config_dhrm');
 const k8sPodsApi = kc.makeApiClient(k8s.CoreV1Api);
 const k8sNamespaceApi = kc.makeApiClient(k8s.AppsV1Api);
 const log = new k8s.Log(kc);
+const portForward = new k8s.PortForward(kc);
 
 const disconnectAfterDelay = async (request, ms) => {
 	await new Promise(resolve => setTimeout(resolve, ms));
@@ -132,6 +139,71 @@ const scalePodByOne = async (namespace, serviceName, increase = 1) => {
 	}
 };
 
+/**
+ * Forward ports based on specified targets within a given namespace.
+ *
+ * @param {string} namespace - The namespace to search for pods.
+ * @param {{serviceName: string, targetPort: number}[]} targets - The array of target service names to match with pods.
+ */
+const forwardPorts = async (namespace, targets) => {
+	try {
+		const pods = await getPods(namespace);
+		const podMap = new Map(pods.map(pod => [
+			pod.metadata.labels['app.kubernetes.io/name'],
+			pod
+		]));
+
+		const fullTargets = targets.map(target => {
+			const pod = podMap.get(target.serviceName);
+
+			if (!pod) {
+				throw new Error(`Pod with service name '${target.serviceName}' not found in namespace '${namespace}'.`);
+			}
+
+			return {podName: pod.metadata.name, ...target};
+		});
+
+		if (fullTargets?.length === 0) {
+			throw new Error(`Pods with services names '${serviceNames.join(', ')}' not found in namespace '${namespace}'.`);
+		}
+
+		for (const target of fullTargets) {
+			const server = net.createServer(async (socket) => {
+				portForward.portForward(namespace, target.podName, [target.port], socket, socket, socket);
+
+				socket.on('error', (error) => {
+					console.error(`\nConnection ERROR: ${error.message}`);
+					console.error(error);
+				});
+
+				socket.on('end', () => {
+					console.debug(`\nThe Pod ${target.serviceName} has been disconnected`);
+					console.debug(`Connection Ended\n`);
+				});
+
+				socket.on('close', () => {
+					console.debug(`\nThe Pod ${target.serviceName} has been disconnected`);
+					console.debug(`Connection Closed\n`);
+				});
+
+				socket.on('timeout', () => {
+					console.debug(`\nThe Pod ${target.serviceName} has been disconnected`);
+					console.debug(`Connection Timeout\n`);
+				});
+			});
+
+			server.listen(target.port, '127.0.0.1', () => {
+				console.log(`\nPort Forwarding Established`);
+				console.log(`[${target.serviceName}:${target.port}] <-> 127.0.0.1:${server.address().port}`);
+				console.log(`Connection Started...\n`);
+			});
+		}
+	} catch (error) {
+		console.error(`\nERROR: ${error.message}`);
+		console.error(error);
+	}
+}
+
 async function main() {
 	const commands = new Map();
 
@@ -170,7 +242,12 @@ async function main() {
 			-1
 		]
 	});
-	commands.set('forward_port', {action: getPodsList, args: [namespace]});
+	commands.set('forward_port', {
+		action: forwardPorts, args: [
+			namespace,
+			targets
+		]
+	});
 	commands.set('unforward_port', {action: getPodsList, args: [namespace]});
 
 	const selectedCommand = commands.get(command);
