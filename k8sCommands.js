@@ -214,7 +214,6 @@ async function main() {
 			serviceName
 		]
 	});
-	commands.set('get_environment_info', {action: getPodsList, args: [namespace]}); // ?
 	commands.set('get_pod_logs', {
 		action: getPodLogs, args: [
 			namespace,
@@ -248,7 +247,8 @@ async function main() {
 			targets
 		]
 	});
-	commands.set('unforward_port', {action: getPodsList, args: [namespace]});
+	commands.set('unforward_port', {action: getPodsList, args: [namespace]}); // ?
+	commands.set('get_environment_info', {action: getPodsList, args: [namespace]}); // ?
 
 	const selectedCommand = commands.get(command);
 
