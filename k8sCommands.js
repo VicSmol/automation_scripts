@@ -66,13 +66,12 @@ const getServiceInfo = async (namespace, serviceName) => {
 	try {
 		const {body: deployment} = await k8sNamespaceApi.readNamespacedDeployment(serviceName, namespace);
 		const {metadata, status} = deployment;
-		const creationTimestamp = new Date(metadata.creationTimestamp);
 		const serviceInfo = {
 			'NAME': metadata.name,
 			'READY': status.readyReplicas || 0,
 			'UP-TO-DATE': status.updatedReplicas || 0,
 			'AVAILABLE': status.availableReplicas || 0,
-			'AGE_HOURS': getTimeFormat(creationTimestamp),
+			'AGE_HOURS': getTimeFormat(metadata.creationTimestamp),
 		};
 
 		console.info(`Service ${serviceName} information:`);
@@ -184,6 +183,27 @@ const forwardPorts = async (namespace, targets) => {
 	}
 }
 
+const getEnvironmentInfo = async () => {
+	try {
+		const {body} = await k8sPodsApi.listNamespace();
+		const reviewNamespaces = body.items.filter(ns => ns.metadata.name.startsWith('review-'));
+		const namespaceCount = reviewNamespaces.length;
+		const reviewNamespaceLimit = 28; // constant for now
+		const namespaceAvailable = reviewNamespaceLimit - namespaceCount;
+
+		console.info(`\nEstablished review stands to date: ${reviewNamespaces.length}`);
+		console.table(reviewNamespaces
+			.map(ns => ({
+				name: ns.metadata.name, status: ns.status.phase, age: getTimeFormat(ns.metadata.creationTimestamp)
+			}))
+			.sort((a, b) => b.age.localeCompare(a.age)));
+		console.info(`Available review stands: ${namespaceAvailable}`);
+	} catch (error) {
+		console.error(`ERROR: ${error.message}`);
+		console.error(error);
+	}
+}
+
 async function main() {
 	const commands = new Map();
 
@@ -227,8 +247,7 @@ async function main() {
 			targets
 		]
 	});
-	commands.set('unforward_port', {action: getPodsList, args: [namespace]}); // ?
-	commands.set('get_environment_info', {action: getPodsList, args: [namespace]}); // ?
+	commands.set('get_environment_info', {action: getEnvironmentInfo, args: []});
 
 	const selectedCommand = commands.get(command);
 
