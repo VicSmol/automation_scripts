@@ -26,7 +26,8 @@
     "k8s_get_pod_logs_real_time": "node k8sCommands.js --command get_pod_logs_real_time --namespace dev --service-name calendar-service",
     "k8s_scale_up_pod": "node k8sCommands.js --command scale_up_service --namespace review-vivsmolyakov-op-408628-op-408628-fix-overtime-work-in-tu --increase 1 --service-name calendar-service",
     "k8s_scale_down_pod": "node k8sCommands.js --command scale_down_service --namespace review-vivsmolyakov-op-408628-op-408628-fix-overtime-work-in-tu --increase -1 --service-name calendar-service",
-    "k8s_port_forward": "node k8sCommands.js --command forward_port --namespace dev --targets '[{\"serviceName\": \"pgbouncer\", \"port\": 5432}]'"
+    "k8s_port_forward": "node k8sCommands.js --command forward_port --namespace dev --targets '[{\"serviceName\": \"pgbouncer\", \"port\": 5432}]'",
+    "k8s_get_environment_info": "node k8sCommands.js --command get_environment_info"
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.20.0"
