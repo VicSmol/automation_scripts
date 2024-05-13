@@ -56,6 +56,7 @@ const getPodsList = async (namespace) => {
 
 		console.info(`Namespace: ${namespace}`);
 		console.table(podsInfo);
+		console.log();
 	} catch (error) {
 		console.error(`ERROR: ${error.message}`);
 		console.error(error);
@@ -76,6 +77,7 @@ const getServiceInfo = async (namespace, serviceName) => {
 
 		console.info(`Service ${serviceName} information:`);
 		console.table([serviceInfo]);
+		console.log();
 	} catch (error) {
 		console.error(`ERROR: ${error.message}`);
 		console.error(error);
@@ -197,7 +199,7 @@ const getEnvironmentInfo = async () => {
 				name: ns.metadata.name, status: ns.status.phase, age: getTimeFormat(ns.metadata.creationTimestamp)
 			}))
 			.sort((a, b) => b.age.localeCompare(a.age)));
-		console.info(`Available review stands: ${namespaceAvailable}`);
+		console.info(`Available review stands: ${namespaceAvailable}\n`);
 	} catch (error) {
 		console.error(`ERROR: ${error.message}`);
 		console.error(error);
